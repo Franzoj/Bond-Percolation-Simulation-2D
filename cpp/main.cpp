@@ -94,7 +94,28 @@ cv::Mat drawCluster(cv::Mat matrix, std::set<std::pair<int, int>> cluster) {
     return result;
 }
 
+void generateMatrixSamples(int width, int height, double step){
+    double p = 0.01; 
+    // Generate the binary matrix
+    while (p <= 1.0) {
+        cv::Mat matrix = generateMatrix(width, height, p);
+        std::set<std::pair<int, int>> biggestCluster = getBiggestCluster(matrix);
+        cv::Mat result = drawCluster(matrix, biggestCluster);
 
+        // Save the matrix as an image
+        std::string folder = "imgs" + std::to_string(width) + "x" + std::to_string(height);
+        std::string filename = folder +"/binary_matrix_" + std::to_string(p) + ".png";
+
+        if (cv::imwrite(filename, result)) {
+            std::cout << "Image saved successfully: " << filename << std::endl;
+        } else {
+            std::cout << "Error: Could not save the image." << std::endl;
+        }
+
+        p += step;
+        printProgressBar((p - 0.01) * 100);
+    }
+}
 
 int main() {
     int width = 1000;   // Width of the matrix
@@ -105,24 +126,8 @@ int main() {
     // Being in a 2D lattice configuration the critical parameter for bond percolation is pc = 0.5927
     double pc = 0.5927;
 
+    generateMatrixSamples(width, height, step)
 
-    // Generate the binary matrix
-    while (p <= 1.0) {
-        cv::Mat matrix = generateMatrix(width, height, p);
-        std::set<std::pair<int, int>> biggestCluster = getBiggestCluster(matrix);
-        cv::Mat result = drawCluster(matrix, biggestCluster);
-
-        // Save the matrix as an image
-        std::string filename = "imgs10k/binary_matrix_" + std::to_string(p) + ".png";
-        if (cv::imwrite(filename, result)) {
-            std::cout << "Image saved successfully: " << filename << std::endl;
-        } else {
-            std::cout << "Error: Could not save the image." << std::endl;
-        }
-
-        p += step;
-        printProgressBar((p - 0.01) * 100);
-    }
 
     return 0;
 }
