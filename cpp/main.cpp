@@ -141,10 +141,11 @@ cv::Mat drawCluster(cv::Mat matrix, std::set<std::pair<int, int>> cluster) {
     }
     return result;
 }
-void generateMatrixSamples(int width, int height, double step){
+
+void generateMatrixSamples(int width, int height, double step, double p_lower_bound = 0, double p_upper_bound = 1){
     double p = 0.01; 
     // Generate the binary matrix
-    while (p <= 1.0) {
+    while (p_lower_bound <= p && p <= p_upper_bound) {
         cv::Mat matrix = generateMatrix(width, height, p);
         std::set<std::pair<int, int>> biggestCluster = getBiggestCluster(matrix);
         cv::Mat result = drawCluster(matrix, biggestCluster);
@@ -163,6 +164,7 @@ void generateMatrixSamples(int width, int height, double step){
         printProgressBar((p - 0.01) * 100);
     }
 }
+
 
 int main() {
     int width = 1000;   // Width of the matrix
