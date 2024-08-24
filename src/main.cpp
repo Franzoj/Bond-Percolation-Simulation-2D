@@ -6,7 +6,7 @@
 #include <sstream>
 #include <string>
 #include <unordered_map>
-
+#include <cmath>
 uchar TARGET_COLOR = 120;
 uchar WHITE_COLOR = 255;
 
@@ -174,6 +174,30 @@ void generateMatrixSamples(int width, int height, double step, double p_lower_bo
     file.close();
 }
 
+void generateFractalSample(double pc, double step, int bound) // non si capisce ma vabbè 
+{
+    int L = 1;
+    int cstep = 0;
+
+    std::string folder = "fracs";
+    std::string command = "mkdir " + folder;
+    system(command.c_str());
+
+    std::ofstream file(folder + "/data.csv");
+    file << "L, cluster_size\n";
+    
+    while(L < bound){
+        cv::Mat matrix = generateMatrix(L, L, pc);
+        std::set<std::pair<int, int>> biggestCluster = getBiggestCluster(matrix);
+        int clusterSize = biggestCluster.size();
+        file << L << "," << clusterSize << "\n";
+        cstep += step;
+        L = (int)pow(10, cstep);
+    }
+    file.close();
+
+}
+
 void generate100(int width, int height)
 {
     generateMatrixSamples(width, height, 0.01, 0, 1);
@@ -184,7 +208,7 @@ int main() {
     int width = 1000;   // Width of the matrix
     int height = 1000;  // Height of the matrix
 
-    int pc = 0.5927; //Bond Percolation Critical parameter in 2D
+    double pc = 0.5927; //Bond Percolation Critical parameter in 2D
     int step = 0.01;
 
     Config config;
@@ -193,7 +217,7 @@ int main() {
         WHITE_COLOR = std::stoi(config.get("white_color"));
     }
 
-    generate100(width, height);
+    generateFractalSample(pc, 0.1, pow(10, 5))
 
     return 0;
 }
