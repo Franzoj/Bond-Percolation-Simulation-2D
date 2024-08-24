@@ -184,18 +184,17 @@ void generateFractalSample(double pc, double step, int bound) // non si capisce 
     system(command.c_str());
 
     std::ofstream file(folder + "/data.csv");
-    file << "L, cluster_size\n";
+    file << "L,cluster_size\n";
     
     while(L < bound){
         cv::Mat matrix = generateMatrix(L, L, pc);
         std::set<std::pair<int, int>> biggestCluster = getBiggestCluster(matrix);
         int clusterSize = biggestCluster.size();
         file << L << "," << clusterSize << "\n";
-        std::cout << L << "," << clusterSize << " \n";
         cstep += step;
         L = (int)pow(10, cstep);
-        
 
+        printProgressBar((((double)L) / ((double)bound)) * 100);
     }
     file.close();
 
