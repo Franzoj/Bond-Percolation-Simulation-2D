@@ -177,7 +177,7 @@ void generateMatrixSamples(int width, int height, double step, double p_lower_bo
 void generateFractalSample(double pc, double step, int bound) // non si capisce ma vabbè 
 {
     int L = 1;
-    int cstep = 0;
+    double cstep = 0;
 
     std::string folder = "fracs";
     std::string command = "mkdir " + folder;
@@ -191,8 +191,11 @@ void generateFractalSample(double pc, double step, int bound) // non si capisce 
         std::set<std::pair<int, int>> biggestCluster = getBiggestCluster(matrix);
         int clusterSize = biggestCluster.size();
         file << L << "," << clusterSize << "\n";
+        std::cout << L << "," << clusterSize << " \n";
         cstep += step;
         L = (int)pow(10, cstep);
+        
+
     }
     file.close();
 
@@ -217,7 +220,8 @@ int main() {
         WHITE_COLOR = std::stoi(config.get("white_color"));
     }
 
-    generateFractalSample(pc, 0.1, pow(10, 5))
+    generateFractalSample(pc, 0.2, pow(10, 4));
+
 
     return 0;
 }
