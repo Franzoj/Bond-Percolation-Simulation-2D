@@ -3,6 +3,10 @@
 #include <iostream>
 #include <set>
 
+#define OCCUPIED 150
+#define WHITE 255
+#define BLACK 0
+
 void printProgressBar(int percentage) {
     int barWidth = 50; // Width of the progress bar
 
@@ -32,9 +36,9 @@ cv::Mat generateMatrix(int width, int height, double p) {
         for(int j = 0; j < width; ++j) {
             // Set the matrix element to 1 with probability p
             if(dis(gen) < p)
-                matrix.at<uchar>(i, j) = 255; // Set to 255 for white pixels
+                matrix.at<uchar>(i, j) = WHITE; // Set to 255 for white pixels
             else
-                matrix.at<uchar>(i, j) = 150; // Set to 0 for black pixels
+                matrix.at<uchar>(i, j) = OCCUPIED; // Set to 150 for black pixels
         }
     }
 
@@ -51,7 +55,7 @@ std::set<std::pair<int, int>> getCluster(cv::Mat matrix, int i, int j) {
     while(!q.empty()) {
         auto [i, j] = q.front();
         q.pop();
-        if(matrix.at<uchar>(i, j) == 255 && visited.find({i, j}) == visited.end()) {
+        if(matrix.at<uchar>(i, j) == OCCUPIED && visited.find({i, j}) == visited.end()) {
             cluster.insert({i, j});
 
             if(i > 0) q.push({i - 1, j}); // Up
@@ -73,7 +77,7 @@ std::set<std::pair<int, int>> getBiggestCluster(cv::Mat matrix) {
     // Iterate over the matrix
     for(int i = 0; i < matrix.rows; ++i) {
         for(int j = 0; j < matrix.cols; ++j) {
-            if(matrix.at<uchar>(i, j) == 255 && visited.find({i, j}) == visited.end()) {
+            if(matrix.at<uchar>(i, j) == OCCUPIED && visited.find({i, j}) == visited.end()) {
                 std::set<std::pair<int, int>> cluster = getCluster(matrix, i, j);
                 visited.insert(cluster.begin(), cluster.end());
                 if(cluster.size() > biggestCluster.size()) {
@@ -89,10 +93,11 @@ std::set<std::pair<int, int>> getBiggestCluster(cv::Mat matrix) {
 cv::Mat drawCluster(cv::Mat matrix, std::set<std::pair<int, int>> cluster) {
     cv::Mat result = matrix.clone();
     for(auto [i, j] : cluster) {
-        result.at<uchar>(i, j) = 0; // Set to 100 for gray pixels
+        result.at<uchar>(i, j) = BLACK; // Set to 0 for black pixels
     }
     return result;
 }
+
 
 void generateMatrixSamples(int width, int height, double step){
     double p = 0.01; 
