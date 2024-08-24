@@ -141,11 +141,8 @@ cv::Mat drawCluster(cv::Mat matrix, std::set<std::pair<int, int>> cluster) {
     }
     return result;
 }
-
-void generate100(int width, int height) {
-    double p = 0.01;    // Probability of a cell being 1
-    double step = 0.01; // Step size for the probability
-
+void generateMatrixSamples(int width, int height, double step){
+    double p = 0.01; 
     // Generate the binary matrix
     while (p <= 1.0) {
         cv::Mat matrix = generateMatrix(width, height, p);
@@ -153,7 +150,9 @@ void generate100(int width, int height) {
         cv::Mat result = drawCluster(matrix, biggestCluster);
 
         // Save the matrix as an image
-        std::string filename = "imgs1k/binary_matrix_" + std::to_string(p) + ".png";
+        std::string folder = "imgs" + std::to_string(width) + "x" + std::to_string(height);
+        std::string filename = folder +"/binary_matrix_" + std::to_string(p) + ".png";
+
         if (cv::imwrite(filename, result)) {
             std::cout << "Image saved successfully: " << filename << std::endl;
         } else {
@@ -169,13 +168,16 @@ int main() {
     int width = 1000;   // Width of the matrix
     int height = 1000;  // Height of the matrix
 
+    int pc = 0.5927; //Bond Percolation Critical parameter in 2D
+    int step = 0.01;
+
     Config config;
     if (config.load("config.cfg")) {
         TARGET_COLOR = std::stoi(config.get("target_color"));
         WHITE_COLOR = std::stoi(config.get("white_color"));
     }
 
-    generate100(width, height);
+    generateMatrixSamples(width, height, step);
 
     return 0;
 }
