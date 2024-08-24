@@ -184,7 +184,7 @@ void generateFractalSample(double pc, double step, int bound) // non si capisce 
     system(command.c_str());
 
     std::ofstream file(folder + "/data.csv");
-    file << "L, cluster_size\n";
+    file << "L,cluster_size\n";
     
     while(L < bound){
         cv::Mat matrix = generateMatrix(L, L, pc);
@@ -211,7 +211,7 @@ int main() {
     int width = 1000;   // Width of the matrix
     int height = 1000;  // Height of the matrix
 
-    double pc = 0.5927; //Bond Percolation Critical parameter in 2D
+    double pc = 0.7; //Bond Percolation Critical parameter in 2D
     int step = 0.01;
 
     Config config;
