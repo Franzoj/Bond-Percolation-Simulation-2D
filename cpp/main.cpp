@@ -165,6 +165,11 @@ void generateMatrixSamples(int width, int height, double step, double p_lower_bo
     }
 }
 
+void generate100(int width, int height)
+{
+    generateMatrixSamples(width, height, 0.01, 0, 1);
+}
+
 
 int main() {
     int width = 1000;   // Width of the matrix
@@ -179,7 +184,7 @@ int main() {
         WHITE_COLOR = std::stoi(config.get("white_color"));
     }
 
-    generateMatrixSamples(width, height, step);
+    generate100(width, height);
 
     return 0;
 }
